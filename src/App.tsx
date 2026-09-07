@@ -10,9 +10,10 @@ import {
   Menu,
   MessageCircle,
   MoveUpRight,
-  Palette,
+  Moon,
   Send,
   Sparkles,
+  Sun,
   X,
 } from 'lucide-react'
 
@@ -34,9 +35,15 @@ const projects = [
 ]
 
 const roles = ['Full-Stack Developer', 'UI/UX Designer', 'Problem Solver']
+const testimonials = [
+  { quote: 'Korezxy turned a complex product idea into an interface that feels obvious to use.', name: 'Amina Yusuf', role: 'Founder, Morrow' },
+  { quote: 'Sharp taste, thoughtful communication, and a finish that made our launch feel premium.', name: 'Daniel Okafor', role: 'Product Lead, Arc' },
+  { quote: 'The rare developer who sees the product, not just the pixels. We shipped with confidence.', name: 'Tobi Adeyemi', role: 'Co-founder, Lumen' },
+]
 
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [darkMode, setDarkMode] = useState(() => window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? true)
   const [activeSection, setActiveSection] = useState('home')
   const [roleIndex, setRoleIndex] = useState(0)
   const [typedRole, setTypedRole] = useState('')
@@ -44,6 +51,10 @@ function App() {
   const [skillsVisible, setSkillsVisible] = useState(false)
   const [formSent, setFormSent] = useState(false)
   const skillsRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = darkMode ? 'dark' : 'light'
+  }, [darkMode])
 
   useEffect(() => {
     const current = roles[roleIndex]
@@ -89,6 +100,9 @@ function App() {
           <button className="brand" onClick={() => scrollTo('home')} aria-label="Korezxy home"><span>K</span><strong>Korezxy</strong><small>.</small></button>
           <div className={`nav-links ${mobileOpen ? 'is-open' : ''}`}>
             {navItems.map((item) => <button key={item} className={activeSection === item ? 'active' : ''} onClick={() => scrollTo(item)}>{item}</button>)}
+            <button className="theme-toggle" onClick={() => setDarkMode((mode) => !mode)} aria-label={`Switch to ${darkMode ? 'light' : 'dark'} mode`} title={`Switch to ${darkMode ? 'light' : 'dark'} mode`}>
+              {darkMode ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
             <button className="nav-cta" onClick={() => scrollTo('contact')}>Let&apos;s talk <ArrowUpRight size={15} /></button>
           </div>
           <button className="menu-toggle" aria-label="Toggle navigation" onClick={() => setMobileOpen((open) => !open)}>{mobileOpen ? <X /> : <Menu />}</button>
@@ -98,7 +112,7 @@ function App() {
       <main>
         <section id="home" className="hero section-pad">
           <div className="hero-copy">
-            <p className="eyebrow"><span className="status-dot" /> Available for new projects</p>
+            <p className="eyebrow"><span className="status-dot" /> Available for freelance projects</p>
             <h1>Building digital<br /><em>experiences</em> that<br />matter.</h1>
             <p className="hero-intro">I&apos;m Korezxy — a <strong>{typedRole}<span className="cursor" /></strong> crafting thoughtful interfaces and scalable products for the web.</p>
             <div className="hero-actions"><button className="button primary" onClick={() => scrollTo('projects')}>See my work <ArrowUpRight size={17} /></button><button className="text-link" onClick={() => scrollTo('contact')}>Let&apos;s connect <span>→</span></button></div>
@@ -112,6 +126,11 @@ function App() {
         <section id="skills" className="skills section-pad section-grid" ref={skillsRef}><div className="section-label">02 / What I do</div><div className="skills-content"><h2>Skills that <span>ship.</span></h2><p className="section-lead">A toolkit built for turning ambitious ideas into polished, performant products.</p><div className="skill-list">{skills.map((skill) => <div className="skill-row" key={skill.name}><div className="skill-meta"><span>{skill.name}</span><b>{skillsVisible ? skill.value : 0}%</b></div><div className="meter"><span className={`${skill.color} ${skillsVisible ? 'filled' : ''}`} style={{ '--width': `${skill.value}%` } as CSSProperties} /></div></div>)}</div></div></section>
 
         <section id="projects" className="projects section-pad"><div className="projects-heading"><div><div className="section-label">03 / Selected work</div><h2>Things I&apos;ve <span>built.</span></h2></div><p>Some of my favorite problems solved with code, curiosity, and a little bit of magic.</p></div><div className="project-grid">{projects.map((project, index) => <article className={`project-card ${index === 0 ? 'featured' : ''}`} key={project.title}><div className="project-image"><img src={project.image} alt="" /><div className="project-overlay"><a href={project.live} target="_blank" rel="noreferrer" aria-label={`View ${project.title}`}><MoveUpRight size={20} /></a></div></div><div className="project-info"><div className="project-title"><div><small>{project.category}</small><h3>{project.title}</h3></div><a href={project.github} target="_blank" rel="noreferrer" aria-label={`${project.title} on GitHub`}><Github size={19} /></a></div><p>{project.description}</p><div className="tags">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div></div></article>)}</div><button className="button outline projects-button" onClick={() => window.open('https://github.com/korezxyweb', '_blank', 'noopener,noreferrer')}>View all projects <ArrowUpRight size={17} /></button></section>
+
+        <section className="testimonials section-pad" aria-label="Client testimonials">
+          <div className="testimonials-heading"><div><div className="section-label">04 / Kind words</div><h2>Good work leaves<br /><span>a signal.</span></h2></div><p>Built with care. Remembered for the way it made people feel.</p></div>
+          <div className="marquee-viewport"><div className="marquee-track">{[...testimonials, ...testimonials].map((testimonial, index) => <article className="testimonial-card" key={`${testimonial.name}-${index}`}><span className="quote-mark">“</span><p>{testimonial.quote}</p><div><strong>{testimonial.name}</strong><small>{testimonial.role}</small></div></article>)}</div></div>
+        </section>
 
         <section id="contact" className="contact section-pad"><div className="contact-card"><div className="contact-copy"><div className="section-label">04 / Get in touch</div><h2>Have a project<br />in mind?</h2><p>Let&apos;s talk about how we can make it happen. I&apos;m always open to new ideas and interesting conversations.</p><div className="contact-links"><a href="mailto:korezxy@gmail.com"><Mail size={17} /> korezxy@gmail.com</a><a href="https://wa.me/2348167526464" target="_blank" rel="noreferrer"><MessageCircle size={17} /> WhatsApp me</a></div></div><form className="contact-form" onSubmit={submitContact}><label>Name<input name="name" placeholder="Your name" required /></label><label>Message<textarea name="message" placeholder="Tell me a little about your project..." required /></label><button className="button primary" type="submit">Send message <Send size={16} /></button>{formSent && <p className="form-success"><Check size={15} /> Opening WhatsApp message…</p>}</form></div></section>
       </main>
